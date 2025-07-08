@@ -2,9 +2,9 @@
 //import fetchGetData from 'client/client';
 
 // project import
-import React, {useState} from 'react';
-import {makeStyles } from '@mui/styles';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { makeStyles } from '@mui/styles';
+import { useNavigate, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { fetchGetDataWithAuth } from 'client/client';
 import { CardContent, Grid, Card } from '@mui/material';
@@ -75,9 +75,8 @@ const brightPopColors = [
   '#33CCFF', // bright sky blue
   '#3375FF', // vibrant blue
   '#9B30FF', // purple
-  '#FF33CC'  // neon pink
+  '#FF33CC' // neon pink
 ];
-
 
 const getRandomColor = () => {
   const randomIndex = Math.floor(Math.random() * brightPopColors.length);
@@ -117,16 +116,17 @@ const AlbumDynamicGridPage = () => {
     <Grid container spacing={2}>
       {dataArray.map((data, index) => (
         <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
-          <Card className={classes.card} style={{backgroundColor: getRandomColor()}}>
-            <CardContent>
-              <h1 style={{ fontSize: '2rem', margin: 0, color: 'white' }}>{data.name}</h1>
-            </CardContent>
-          </Card>
+          <Link to={`/album/show?id=${data.id}`}>
+            <Card className={classes.card} style={{ backgroundColor: getRandomColor() }}>
+              <CardContent>
+                <h1 style={{ fontSize: '2rem', margin: 0, color: 'white' }}>{data.name}</h1>
+              </CardContent>
+            </Card>
+          </Link>
         </Grid>
       ))}
     </Grid>
   );
 };
-
 
 export default AlbumDynamicGridPage;
