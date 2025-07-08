@@ -53,5 +53,26 @@ const fetchGetDataWithAuth = async (uri) => {
     }
 };
 
+const fetchPostFileUploadWithAuth = async (uri, formData) => {
+    const token = localStorage.getItem('token');
+    const url = `${uri}`;
+    try {
+        const response = await axios.post(url, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  "Authorization": `Bearer ${token}`
+                }
+              });
+        return response;
+    } catch (error) {
+        if (error.response?.status === 401) {
+            // Token expired or invalid
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+        console.error('Error fetching data: ', error);
+    }
+};
+
 export default fetchGetData;
-export { fetchPostData, fetchPostDataWithAuth,fetchGetDataWithAuth };
+export { fetchPostData, fetchPostDataWithAuth,fetchGetDataWithAuth, fetchPostFileUploadWithAuth };

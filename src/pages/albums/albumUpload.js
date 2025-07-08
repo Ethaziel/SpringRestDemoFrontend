@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import Header from './albums/header';
 import { Box, Button, CircularProgress, Container, Grid, Paper, Typography, IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { AddCircleOutline, Close } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { fetchPostFileUploadWithAuth } from 'client/client';
 
 const useStyles = makeStyles((theme) => ({
   dropzoneContainer: {
@@ -53,15 +53,22 @@ const FileUploadPage = () => {
         formData.append('files', file);
       });
 
-      const token = localStorage.getItem('token');
-      const response = await axios.post('/albums/' + id + '/upload-photos', formData, {
+      //const token = localStorage.getItem('token');
+      /* const response = await axios.post('/albums/' + id + '/upload-photos', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
         }
-      });
+      }); */
 
-      console.log('Upload successful:', response.data);
+      fetchPostFileUploadWithAuth('/albums/' + id + '/upload-photos', formData)
+        .then(
+            res => {
+                console.log(res.data);
+                navigate('/album/show?id=' + id);
+            }
+        );
+
       setFiles([]);
       navigate('/album/show?id=' + id);
     } catch (error) {
