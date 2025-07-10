@@ -74,5 +74,26 @@ const fetchPostFileUploadWithAuth = async (uri, formData) => {
     }
 };
 
+const fetchGetDataWithAuthArrayBuffer = (uri) => {
+    const token = localStorage.getItem('token');
+    const url = `${uri}`;
+    try {
+        const response = axios.get(url, {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                },
+                responseType: 'arraybuffer'
+              });
+        return response;
+    } catch (error) {
+        if (error.response?.status === 401) {
+            // Token expired or invalid
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+        console.error('Error fetching data: ', error);
+    }
+};
+
 export default fetchGetData;
-export { fetchPostData, fetchPostDataWithAuth,fetchGetDataWithAuth, fetchPostFileUploadWithAuth };
+export { fetchPostData, fetchPostDataWithAuth, fetchGetDataWithAuth, fetchPostFileUploadWithAuth, fetchGetDataWithAuthArrayBuffer };
