@@ -18,7 +18,7 @@ const Header = () => {
                         color="inherit" variant="contained"
                         sx={{mr: 2, backgroundColor: '#799eff', '&:hover': {backgroundColor: '#2f6ad5'}}}
                         >
-                        Show Photos
+                        Edit Album
                 </Button>
 
                 <Button component={Link} to={`/album/upload?id=${id}`} 
@@ -32,7 +32,7 @@ const Header = () => {
                         color="inherit" variant="contained"
                         sx={{ backgroundColor: '#f4435a', '&:hover': {backgroundColor: '#d32f4a'}}}
                         >
-                        Delete Photos
+                        Delete Album
                 </Button>
 
             </Toolbar>

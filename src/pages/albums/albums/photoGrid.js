@@ -27,6 +27,22 @@ const PhotoGrid = () => {
     const queryParams = new URLSearchParams(location.search);
     const album_id = queryParams.get('id');
 
+    const handleView = () => {
+      console.log("View clicked")
+    }
+    
+    const handleEdit = () => {
+      console.log("Edit clicked")
+    }
+
+    const handleDownload = () => {
+      console.log("Download clicked")
+    }
+    
+    const handleDelete = () => {
+      console.log("Delete clicked")
+    }
+
     useEffect(() => {
         /* const addPhotoAsync = async (link) => {
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -98,6 +114,10 @@ const PhotoGrid = () => {
                     <Tooltip title={photos[key]['description']}>
                         <Typography variant="subtitle1">{photos[key]['name']}</Typography>
                     </Tooltip>
+                    <a href="#" onClick={handleView}> View </a> |
+                    <a href="#" onClick={handleEdit}> Edit </a> |
+                    <a href="#" onClick={handleDownload}> Download </a> |
+                    <a href="#" onClick={handleDelete}> Delete </a>
                 </CardContent>
             </Card>
         </Grid>
