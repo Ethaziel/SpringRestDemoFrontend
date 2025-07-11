@@ -26,6 +26,7 @@ const PhotoGrid = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const album_id = queryParams.get('id');
+    const [albumInfo, setAlbumInfo] = useState({});
 
     const handleView = () => {
       console.log("View clicked")
@@ -58,7 +59,7 @@ const PhotoGrid = () => {
         loadPhotos(); */
 
         fetchGetDataWithAuth('/albums/' + album_id).then(res => {
-            console.log('res', res.data);
+            setAlbumInfo(res.data);
             const photoList = res.data.photos; // extract list of photos from album
 
             photoList.forEach(photo => {
@@ -86,6 +87,9 @@ const PhotoGrid = () => {
     }, [album_id] );
 
   return (
+    <div>
+      <Typography variant="h4" gutterBottom>{albumInfo.name}</Typography>
+      <Typography variant="subtitle1" gutterBottom>{albumInfo.description}</Typography>
     <Grid container spacing={2}>
       {/* {[...photos].map((photo) => (
         <Grid item xs={8} sm={4} md={4} lg={2} key={photo.id}>
@@ -123,6 +127,7 @@ const PhotoGrid = () => {
         </Grid>
       ))}
     </Grid>
+    </div>
   );
 };
 

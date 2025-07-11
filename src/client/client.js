@@ -35,6 +35,21 @@ const fetchPostDataWithAuth = (uri, payload) => {
     });
 };
 
+const fetchPutDataWithAuth = (uri, payload) => {
+    const token = localStorage.getItem('token');
+    const url = `${uri}`;
+    return axios.put(url, payload, {headers: {
+        "accept": "*/*",
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+    },
+})
+    .catch(error => {
+        console.error('Error fetching data for URL: ', url, 'Error', error.message);
+        throw error;
+    });
+};
+
 const fetchGetDataWithAuth = async (uri) => {
     const token = localStorage.getItem('token');
     const url = `${uri}`;
@@ -96,4 +111,6 @@ const fetchGetDataWithAuthArrayBuffer = (uri) => {
 };
 
 export default fetchGetData;
-export { fetchPostData, fetchPostDataWithAuth, fetchGetDataWithAuth, fetchPostFileUploadWithAuth, fetchGetDataWithAuthArrayBuffer };
+export { fetchPostData, fetchPostDataWithAuth, fetchGetDataWithAuth, 
+            fetchPostFileUploadWithAuth, fetchGetDataWithAuthArrayBuffer, 
+            fetchPutDataWithAuth };

@@ -14,7 +14,7 @@ const Header = () => {
                     Photo Gallery
                 </Typography>
 
-                <Button component={Link} to={`/album/show?id=${id}`} 
+                <Button component={Link} to={`/album/edit?id=${id}`} 
                         color="inherit" variant="contained"
                         sx={{mr: 2, backgroundColor: '#799eff', '&:hover': {backgroundColor: '#2f6ad5'}}}
                         >
