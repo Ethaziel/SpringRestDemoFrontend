@@ -11,6 +11,7 @@ const AlbumAddPage = Loadable(lazy(() => import('pages/albums/albumAdd')));
 const AlbumShowPage = Loadable(lazy(() => import('pages/albums/albumShow')));
 const AlbumUploadPage = Loadable(lazy(() => import('pages/albums/albumUpload')));
 const AlbumEditPage = Loadable(lazy(() => import('pages/albums/albumEdit')));
+const PhotoEditPage = Loadable(lazy(() => import('pages/albums/photoEdit')));
 
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -38,6 +39,10 @@ const MainRoutes = {
     {
       path: '/album/edit',
       element: <AlbumEditPage/>
+    },
+    {
+      path: '/photo/edit',
+      element: <PhotoEditPage/>
     },
     {
       path: '/album/upload',

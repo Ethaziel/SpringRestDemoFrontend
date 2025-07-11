@@ -3,13 +3,16 @@ import { useEffect, useState } from "react";
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import { useNavigate, useLocation } from 'react-router-dom';
-import { fetchPutDataWithAuth, fetchGetDataWithAuth } from "client/client";
+import { fetchPutDataWithAuth } from "client/client";
 
-const EditAlbumForm = () => {
+const EditPhotoForm = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const album_id = queryParams.get('id');
+    const album_id = queryParams.get('album_id');
+    const photo_id = queryParams.get('photo_id');
+    const photo_name = queryParams.get('photo_name');
+    let photo_desc = queryParams.get('photo_desc'); 
 
     useEffect(() => {
         const isLoggedIn = localStorage.getItem('token');
@@ -18,17 +21,17 @@ const EditAlbumForm = () => {
             window.location.reload();
         }
 
-        fetchGetDataWithAuth("/albums/" + album_id)
-            .then(res => {
-                if (res.data){
-                    setFormData(prevFormData => ({
-                        ...prevFormData,
-                        name: res.data.name,
-                        description: res.data.description
-                    }))
-                }
-            })
-    }, []);
+        if(photo_desc == 'null'){
+            photo_desc = "";
+        }
+
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            name: photo_name,
+            description: photo_desc
+        }));
+        
+    }, [navigate]);
     
     const [formData, setFormData] = useState({
         name: '',
@@ -72,7 +75,7 @@ const EditAlbumForm = () => {
                 description: formData.description,
             };
 
-            fetchPutDataWithAuth("/albums/" + album_id + "/update", payload)
+            fetchPutDataWithAuth("/albums/" + album_id + "/photos/" + photo_id +  "/update", payload)
                 .then((response) => {
                     console.log(response)
                 }).catch((error) => {
@@ -112,7 +115,7 @@ const EditAlbumForm = () => {
             />
 
             <Button type="submit" variant="contained" color="primary">
-                Edit Album
+                Edit Photo
             </Button>
         </form>
     );
@@ -128,4 +131,4 @@ const EditAlbumForm = () => {
 
 
 
-export default EditAlbumForm;
+export default EditPhotoForm;
