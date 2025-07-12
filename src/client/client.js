@@ -110,7 +110,27 @@ const fetchGetDataWithAuthArrayBuffer = (uri) => {
     }
 };
 
+const fetchDeleteDataWithAuth = async (uri) => {
+    const token = localStorage.getItem('token');
+    const url = `${uri}`;
+    try {
+        const response = await axios.delete(url, {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              });
+        return response;
+    } catch (error) {
+        if (error.response?.status === 401) {
+            // Token expired or invalid
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+        console.error('Error fetching data: ', error);
+    }
+}; 
+
 export default fetchGetData;
 export { fetchPostData, fetchPostDataWithAuth, fetchGetDataWithAuth, 
             fetchPostFileUploadWithAuth, fetchGetDataWithAuthArrayBuffer, 
-            fetchPutDataWithAuth };
+            fetchPutDataWithAuth, fetchDeleteDataWithAuth };

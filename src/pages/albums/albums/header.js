@@ -1,11 +1,25 @@
 import React from "react";
 import {Link, useLocation } from 'react-router-dom';
 import {Button, AppBar, Toolbar, Typography } from '@mui/material';
+import { fetchDeleteDataWithAuth } from "client/client";
 
 const Header = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const id = queryParams.get('id');
+
+    const handleDelete = () => {
+        const isConfirmed = window.confirm('Are you sure you want to delete the album?')
+        if (isConfirmed){
+        fetchDeleteDataWithAuth('/albums/' + id + '/delete')
+            .then(res => {
+            console.log(res);
+            window.location.href = '/';
+            })
+        } else {
+        console.log('Delete canceled');
+        }
+    }
 
     return (
         <AppBar position="static">
@@ -28,7 +42,7 @@ const Header = () => {
                         Upload Photos
                 </Button>
 
-                <Button component={Link} to={`/album/delete?id=${id}`} 
+                <Button onClick={handleDelete}
                         color="inherit" variant="contained"
                         sx={{ backgroundColor: '#f4435a', '&:hover': {backgroundColor: '#d32f4a'}}}
                         >

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { Card, CardContent, CardMedia, Grid, Typography, Tooltip } from '@mui/material';
 //import {  Grid } from '@mui/material';
-import { fetchGetDataWithAuth, fetchGetDataWithAuthArrayBuffer } from "client/client";
+import { fetchGetDataWithAuth, fetchGetDataWithAuthArrayBuffer, fetchDeleteDataWithAuth } from "client/client";
 import { useLocation } from 'react-router-dom';
 import { Buffer } from 'buffer';
 
@@ -36,8 +36,17 @@ const PhotoGrid = () => {
       console.log("Download clicked")
     }
     
-    const handleDelete = () => {
-      console.log("Delete clicked")
+    const handleDelete = (photo_id) => {
+      const isConfirmed = window.confirm('Are you sure you want to delete the photo?')
+      if (isConfirmed){
+        fetchDeleteDataWithAuth('/albums/' + album_id + '/photos/' + photo_id + '/delete')
+          .then(res => {
+            console.log(res);
+            window.location.reload();
+          })
+      } else {
+        console.log('Delete canceled');
+      }
     }
 
     useEffect(() => {
@@ -67,8 +76,6 @@ const PhotoGrid = () => {
                     const albumPhotoID = 'album_' + album_id + '_photo' + photo.id;
                     const buffer = Buffer.from(response.data, 'binary').toString('base64');
                     
-                    console.log('Binary response length:', response.data?.byteLength);
-
                     const temp = {
                         'album_id': album_id,
                         'photo_id': photo.id,
@@ -108,7 +115,7 @@ const PhotoGrid = () => {
         <Grid item key={key} xs={8} sm={4} md={4} lg={2}>
             <Card>
                 <Tooltip title={photos[key]['description']}>
-                    <CardMedia component="img" height="200" image={'data:image/jpeg;base64,' + photos[key]['content']} alt={photos[key]['description']} title={photos[key]['description']}/>
+                    <CardMedia component="img" height="200" image={'data:image/jpeg;base64,' + photos[key]['content']} alt={photos[key]['description']} />
                 </Tooltip>
                 <CardContent>
                     <Tooltip title={photos[key]['description']}>
@@ -117,7 +124,7 @@ const PhotoGrid = () => {
                     <a href="#" onClick={handleView}> View </a> |
                     <a href={`/photo/edit?album_id=${album_id}&photo_id=${photos[key]['photo_id']}&photo_name=${photos[key]['name']}&photo_desc=${photos[key]['description']}`}> Edit </a> |
                     <a href="#" onClick={handleDownload}> Download </a> |
-                    <a href="#" onClick={handleDelete}> Delete </a>
+                    <a href="#" onClick={() => handleDelete(photos[key]['photo_id'])}> Delete </a>
                 </CardContent>
             </Card>
         </Grid>
