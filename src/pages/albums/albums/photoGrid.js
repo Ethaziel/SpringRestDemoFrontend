@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { Card, CardContent, CardMedia, Grid, Typography, Tooltip } from '@mui/material';
 //import {  Grid } from '@mui/material';
-import { fetchGetDataWithAuth, fetchGetDataWithAuthArrayBuffer, fetchDeleteDataWithAuth } from "client/client";
+import { fetchGetDataWithAuth, fetchGetDataWithAuthArrayBuffer, fetchGetBlobDataWithAuth, fetchDeleteDataWithAuth } from "client/client";
 import { useLocation } from 'react-router-dom';
 import { Buffer } from 'buffer';
 
@@ -32,8 +32,22 @@ const PhotoGrid = () => {
       console.log("View clicked")
     }
 
-    const handleDownload = () => {
-      console.log("Download clicked")
+    const handleDownload = (download_link) => {
+      fetchGetBlobDataWithAuth(download_link).then(
+        response => {
+          const disposition = response.headers.get('Content-Disposition');
+          const match = /filename="(.*)"/.exec(disposition);
+          const filename = match ? match[1] : 'downloadedFile';
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', filename);
+          document.body.appendChild(link);
+          link.click();
+        }
+      ).catch (error => {
+        console.error('Error downloading photo: ', error);
+      })
     }
     
     const handleDelete = (photo_id) => {
@@ -82,6 +96,7 @@ const PhotoGrid = () => {
                         'name': photo.name,
                         'description': photo.description,
                         'content': buffer,
+                        'download_link': photo.downloadLink
                     }
                     setPhotos(prevPhotos => ({ ...prevPhotos, [albumPhotoID]: temp}));
                 });
@@ -123,7 +138,7 @@ const PhotoGrid = () => {
                     </Tooltip>
                     <a href="#" onClick={handleView}> View </a> |
                     <a href={`/photo/edit?album_id=${album_id}&photo_id=${photos[key]['photo_id']}&photo_name=${photos[key]['name']}&photo_desc=${photos[key]['description']}`}> Edit </a> |
-                    <a href="#" onClick={handleDownload}> Download </a> |
+                    <a href="#" onClick={() => handleDownload(photos[key]['download_link'])}> Download </a> |
                     <a href="#" onClick={() => handleDelete(photos[key]['photo_id'])}> Delete </a>
                 </CardContent>
             </Card>
