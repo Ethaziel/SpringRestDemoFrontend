@@ -4,6 +4,9 @@ import { Card, CardContent, CardMedia, Grid, Typography, Tooltip } from '@mui/ma
 import { fetchGetDataWithAuth, fetchGetDataWithAuthArrayBuffer, fetchGetBlobDataWithAuth, fetchDeleteDataWithAuth } from "client/client";
 import { useLocation } from 'react-router-dom';
 import { Buffer } from 'buffer';
+import { makeStyles } from '@mui/styles';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
 
 //const samplePhotoUrl = "https://picsum.photos/300/200";
 
@@ -17,6 +20,26 @@ import { Buffer } from 'buffer';
   }));
 }; */
 
+const useStyles = makeStyles((theme) => ({
+  modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+  },
+  modalMain: {
+      backgroundColor: theme.palette.background.paper,
+      borderRadius: '10px',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      maxHeight: '90%',
+      maxWidth: '90%',
+      overflow: 'auto',
+  },
+  closeButton: {
+      marginLeft: 'auto',
+  },
+}));
+
 const PhotoGrid = () => {
  // const photos = generatePicsumUrls();
 
@@ -27,9 +50,31 @@ const PhotoGrid = () => {
     const queryParams = new URLSearchParams(location.search);
     const album_id = queryParams.get('id');
     const [albumInfo, setAlbumInfo] = useState({});
+    const classes = useStyles();
+    const [open, setOpen] = useState(false);
+    const [PhotoContent, setPhotoContent] = useState(null);
+    const [PhotoDesc, setPhotoDesc] = useState(null);
+    const [DownloadLink, setDownloadLink] = useState(null);
 
-    const handleView = () => {
-      console.log("View clicked")
+    const handleOpen = () => {
+      setOpen(true);
+    };
+
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    const handleView = (download_link, description) => {
+      fetchGetDataWithAuthArrayBuffer(download_link).then(response => {
+                    
+          const buffer = Buffer.from(response.data, 'binary').toString('base64');
+          setPhotoContent(buffer);
+      });
+
+      setPhotoDesc(description);
+      setDownloadLink(download_link);
+
+      handleOpen();
     }
 
     const handleDownload = (download_link) => {
@@ -83,9 +128,9 @@ const PhotoGrid = () => {
 
             photoList.forEach(photo => {
 
+                let thumbnail_link = photo.downloadLink.replace("/download-photo", "/download-thumbnail")
 
-
-                fetchGetDataWithAuthArrayBuffer(photo.downloadLink).then(response => {
+                fetchGetDataWithAuthArrayBuffer(thumbnail_link).then(response => {
                     
                     const albumPhotoID = 'album_' + album_id + '_photo' + photo.id;
                     const buffer = Buffer.from(response.data, 'binary').toString('base64');
@@ -106,6 +151,19 @@ const PhotoGrid = () => {
 
   return (
     <div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        className={classes.modal}>
+
+          <div className={classes.modalMain}>
+            <img src={'data:image/jpeg;base64,' + PhotoContent} alt = {PhotoDesc} style={{width: '100%', height: 'auto', }}/>
+            <Button onClick={() => handleDownload(DownloadLink)}> Download Photo </Button>
+            <Button onClick={handleClose} className={classes.closeButton}> Close </Button>
+          </div>
+      </Modal>
       <Typography variant="h4" gutterBottom>{albumInfo.name}</Typography>
       <Typography variant="subtitle1" gutterBottom>{albumInfo.description}</Typography>
     <Grid container spacing={2}>
@@ -136,7 +194,7 @@ const PhotoGrid = () => {
                     <Tooltip title={photos[key]['description']}>
                         <Typography variant="subtitle1">{photos[key]['name']}</Typography>
                     </Tooltip>
-                    <a href="#" onClick={handleView}> View </a> |
+                    <a href="#" onClick={() => handleView(photos[key]['download_link'], photos[key]['description'])}> View </a> |
                     <a href={`/photo/edit?album_id=${album_id}&photo_id=${photos[key]['photo_id']}&photo_name=${photos[key]['name']}&photo_desc=${photos[key]['description']}`}> Edit </a> |
                     <a href="#" onClick={() => handleDownload(photos[key]['download_link'])}> Download </a> |
                     <a href="#" onClick={() => handleDelete(photos[key]['photo_id'])}> Delete </a>

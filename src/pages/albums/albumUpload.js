@@ -70,7 +70,7 @@ const FileUploadPage = () => {
         );
 
       setFiles([]);
-      navigate('/album/show?id=' + id);
+      //navigate('/album/show?id=' + id);
     } catch (error) {
       console.error('Error uploading files:', error.message);
     } finally {
