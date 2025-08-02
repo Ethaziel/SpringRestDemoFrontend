@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-//const BASE_URL = process.env.REACT_APP_BASE_URL;
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 const fetchGetData = (uri) => {
-    const url = `${uri}`;
+    const url = `${BASE_URL}${uri}`;
     return axios.get(url)
         .catch(error => {
             console.error('Error fetching data from url: ', url, 'Error', error.message);
@@ -12,7 +12,7 @@ const fetchGetData = (uri) => {
 };
 
 const fetchPostData = (uri, payload) => {
-    const url = `${uri}`;
+    const url = `${BASE_URL}${uri}`;
     return axios.post(url, payload)
         .catch(error => {
             console.error('Error fetching data forURL: ', url, 'Error', error.message);
@@ -22,7 +22,7 @@ const fetchPostData = (uri, payload) => {
 
 const fetchPostDataWithAuth = (uri, payload) => {
     const token = localStorage.getItem('token');
-    const url = `${uri}`;
+    const url = `${BASE_URL}${uri}`;
     return axios.post(url, payload, {headers: {
         "accept": "*/*",
         "Content-Type": "application/json",
@@ -37,7 +37,7 @@ const fetchPostDataWithAuth = (uri, payload) => {
 
 const fetchPutDataWithAuth = (uri, payload) => {
     const token = localStorage.getItem('token');
-    const url = `${uri}`;
+    const url = `${BASE_URL}${uri}`;
     return axios.put(url, payload, {headers: {
         "accept": "*/*",
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ const fetchPutDataWithAuth = (uri, payload) => {
 
 const fetchGetDataWithAuth = async (uri) => {
     const token = localStorage.getItem('token');
-    const url = `${uri}`;
+    const url = `${BASE_URL}${uri}`;
     try {
         const response = await axios.get(url, {headers:
             {"Authorization": `Bearer ${token}`,}
@@ -70,7 +70,7 @@ const fetchGetDataWithAuth = async (uri) => {
 
 const fetchPostFileUploadWithAuth = async (uri, formData) => {
     const token = localStorage.getItem('token');
-    const url = `${uri}`;
+    const url = `${BASE_URL}${uri}`;
     try {
         const response = await axios.post(url, formData, {
                 headers: {
@@ -91,7 +91,7 @@ const fetchPostFileUploadWithAuth = async (uri, formData) => {
 
 const fetchGetDataWithAuthArrayBuffer = (uri) => {
     const token = localStorage.getItem('token');
-    const url = `${uri}`;
+    const url = `${BASE_URL}${uri}`;
     try {
         const response = axios.get(url, {
                 headers: {
@@ -112,7 +112,7 @@ const fetchGetDataWithAuthArrayBuffer = (uri) => {
 
 const fetchDeleteDataWithAuth = async (uri) => {
     const token = localStorage.getItem('token');
-    const url = `${uri}`;
+    const url = `${BASE_URL}${uri}`;
     try {
         const response = await axios.delete(url, {
                 headers: {
@@ -132,7 +132,7 @@ const fetchDeleteDataWithAuth = async (uri) => {
 
 const fetchGetBlobDataWithAuth = async (uri) => {
     const token = localStorage.getItem('token');
-    const url = `${uri}`;
+    const url = `${BASE_URL}${uri}`;
     try {
         const response = await axios.get(url, {
                 headers: {
