@@ -44,7 +44,7 @@ const AuthLogin = () => {
     }
 
     // login logic here
-    fetchPostData("auth/token", {email, password})
+    fetchPostData("/auth/token", {email, password})
       .then((response) => {
         const {token} = response.data;
         setLoginError('');
