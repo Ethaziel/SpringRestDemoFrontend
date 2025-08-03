@@ -50,7 +50,6 @@ const PhotoGrid = () => {
     const queryParams = new URLSearchParams(location.search);
     const album_id = queryParams.get('id');
     const [albumInfo, setAlbumInfo] = useState({});
-    const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [PhotoContent, setPhotoContent] = useState(null);
     const [PhotoDesc, setPhotoDesc] = useState(null);
