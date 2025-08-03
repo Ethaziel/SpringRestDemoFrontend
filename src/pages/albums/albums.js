@@ -3,11 +3,12 @@
 
 // project import
 import React, { useState } from 'react';
-import { makeStyles } from '@mui/styles';
 import { useNavigate, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { fetchGetDataWithAuth } from 'client/client';
-import { CardContent, Grid, Card } from '@mui/material';
+import { CardContent, Grid } from '@mui/material';
+import styled from '@emotion/styled';
+import { Card as MuiCard } from '@mui/material';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
@@ -83,6 +84,7 @@ const getRandomColor = () => {
   return brightPopColors[randomIndex];
 };
 
+/*
 const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: getRandomColor(),
@@ -94,6 +96,18 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'center'
   }
+}));
+*/
+
+const StyledCard = styled(MuiCard)(({ theme, bgcolor }) => ({
+  backgroundColor: bgcolor,
+  textAlign: 'center',
+  padding: theme.spacing(3),
+  borderRadius: theme.spacing(2),
+  height: '250px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
 }));
 
 const AlbumDynamicGridPage = () => {
@@ -111,8 +125,8 @@ const AlbumDynamicGridPage = () => {
     });
   }, []);
 
-  const classes = useStyles();
-  return (
+ // const classes = useStyles();
+ /* return (
     <Grid container spacing={2}>
       {dataArray.map((data, index) => (
         <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
@@ -127,6 +141,30 @@ const AlbumDynamicGridPage = () => {
       ))}
     </Grid>
   );
-};
+  */
 
+
+
+  return (
+    <Grid container spacing={2}>
+      {dataArray.map((data, index) => {
+        const randomColor = getRandomColor(); 
+        return (
+          <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+            <Link to={`/album/show?id=${data.id}`}>
+              <StyledCard bgcolor={randomColor}>
+                <CardContent>
+                  <h1 style={{ fontSize: '2rem', margin: 0, color: 'white' }}>
+                    {data.name}
+                  </h1>
+                </CardContent>
+              </StyledCard>
+            </Link>
+          </Grid>
+        );
+      })}
+    </Grid>
+  );
+
+};
 export default AlbumDynamicGridPage;

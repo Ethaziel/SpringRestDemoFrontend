@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
 import Header from './albums/header';
 import { Box, Button, CircularProgress, Container, Grid, Paper, Typography, IconButton } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import styled from '@emotion/styled';
 import { AddCircleOutline, Close } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { fetchPostFileUploadWithAuth } from 'client/client';
 
-const useStyles = makeStyles((theme) => ({
-  dropzoneContainer: {
-    border: `2px dashed ${theme.palette.primary.main}`,
-    borderRadius: theme.spacing(2),
-    padding: theme.spacing(4),
-    textAlign: 'center',
-    cursor: 'pointer'
-  },
-  uploadedFile: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: theme.spacing(2),
-    marginTop: theme.spacing(2),
-    border: `1px solid ${theme.palette.secondary.main}`,
-    borderRadius: theme.spacing(1)
-  }
+const DropzoneContainer = styled(Paper)(({ theme }) => ({
+  border: `2px dashed ${theme.palette.primary.main}`,
+  borderRadius: theme.spacing(2),
+  padding: theme.spacing(4),
+  textAlign: 'center',
+  cursor: 'pointer'
+}));
+
+const UploadedFile = styled(Paper)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: theme.spacing(2),
+  marginTop: theme.spacing(2),
+  border: `1px solid ${theme.palette.secondary.main}`,
+  borderRadius: theme.spacing(1)
 }));
 
 const FileUploadPage = () => {
-  const classes = useStyles();
+  
   const [files, setFiles] = useState([]);
   const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
@@ -91,20 +90,20 @@ const FileUploadPage = () => {
             </Grid>
             <Grid item xs={12} {...getRootProps()}>
               <input {...getInputProps()} />
-              <Paper elevation={3} className={classes.dropzoneContainer}>
+              <DropzoneContainer elevation={3}>
                 <AddCircleOutline fontSize="large" color="primary" />
                 <Typography variant="h6">Drag and drop photos or click to select files</Typography>
-              </Paper>
+              </DropzoneContainer>
             </Grid>
             <Grid item xs={12}>
               <Box>
                 {files.map((file, index) => (
-                  <Paper key={index} elevation={3} className={classes.uploadedFile}>
+                  <UploadedFile key={index} elevation={3}>
                     <Typography>{file.name}</Typography>
                     <IconButton onClick={() => removeFile(index)} color="secondary">
                       <Close />
                     </IconButton>
-                  </Paper>
+                  </UploadedFile>
                 ))}
               </Box>
             </Grid>

@@ -4,7 +4,7 @@ import { Card, CardContent, CardMedia, Grid, Typography, Tooltip } from '@mui/ma
 import { fetchGetDataWithAuth, fetchGetDataWithAuthArrayBuffer, fetchGetBlobDataWithAuth, fetchDeleteDataWithAuth } from "client/client";
 import { useLocation } from 'react-router-dom';
 import { Buffer } from 'buffer';
-import { makeStyles } from '@mui/styles';
+import styled from '@emotion/styled';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 
@@ -20,25 +20,25 @@ import Button from '@mui/material/Button';
   }));
 }; */
 
-const useStyles = makeStyles((theme) => ({
-  modal: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-  },
-  modalMain: {
-      backgroundColor: theme.palette.background.paper,
-      borderRadius: '10px',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-      maxHeight: '90%',
-      maxWidth: '90%',
-      overflow: 'auto',
-  },
-  closeButton: {
-      marginLeft: 'auto',
-  },
+const ModalBox = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: '10px',
+  boxShadow: theme.shadows[5],
+  padding: theme.spacing(2, 4, 3),
+  maxHeight: '90%',
+  maxWidth: '90%',
+  overflow: 'auto',
 }));
+
+const StyledModal = styled(Modal)({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
+const CloseButton = styled(Button)({
+  marginLeft: 'auto',
+});
 
 const PhotoGrid = () => {
  // const photos = generatePicsumUrls();
@@ -151,19 +151,18 @@ const PhotoGrid = () => {
 
   return (
     <div>
-      <Modal
+      <StyledModal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        className={classes.modal}>
-
-          <div className={classes.modalMain}>
-            <img src={'data:image/jpeg;base64,' + PhotoContent} alt = {PhotoDesc} style={{width: '100%', height: 'auto', }}/>
-            <Button onClick={() => handleDownload(DownloadLink)}> Download Photo </Button>
-            <Button onClick={handleClose} className={classes.closeButton}> Close </Button>
-          </div>
-      </Modal>
+        >
+          <ModalBox>
+            <img src={'data:image/jpeg;base64,' + PhotoContent} alt={PhotoDesc} style={{ width: '100%', height: 'auto' }} />
+            <Button onClick={() => handleDownload(DownloadLink)}>Download Photo</Button>
+            <CloseButton onClick={handleClose}>Close</CloseButton>
+          </ModalBox>
+      </StyledModal>
       <Typography variant="h4" gutterBottom>{albumInfo.name}</Typography>
       <Typography variant="subtitle1" gutterBottom>{albumInfo.description}</Typography>
     <Grid container spacing={2}>
