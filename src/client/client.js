@@ -2,9 +2,6 @@ import axios from 'axios';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
-console.log("process.env.REACT_APP_API_URL =", process.env.REACT_APP_API_URL);
-console.log("BASE_URL =", BASE_URL);
-
 const fetchGetData = (uri) => {
     const url = `${BASE_URL}${uri}`;
     return axios.get(url)
