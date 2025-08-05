@@ -44,7 +44,7 @@ const AuthRegister = () => {
     }
 
     // login logic here
-    fetchPostData("auth/users/add", {email, password})
+    fetchPostData("/auth/users/add", {email, password})
       .then(() => {
         setLoginError('');
         navigate('/login'); // relocates to home page
