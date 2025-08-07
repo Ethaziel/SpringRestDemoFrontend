@@ -77,22 +77,35 @@ const PhotoGrid = () => {
     }
 
     const handleDownload = (download_link) => {
-      fetchGetBlobDataWithAuth(download_link).then(
-        response => {
-          const disposition = response.headers.get('Content-Disposition');
-          const match = /filename="(.*)"/.exec(disposition);
-          const filename = match ? match[1] : 'downloadedFile';
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', filename);
-          document.body.appendChild(link);
-          link.click();
+      fetchGetBlobDataWithAuth(download_link).then(response => {
+        // Workaround: get header manually from the raw XMLHttpRequest
+        const disposition = response?.request?.getResponseHeader('Content-Disposition');
+
+        let filename = 'downloadedFile';
+        if (disposition && disposition.includes('filename=')) {
+          const matches = disposition.match(/filename="?([^"]+)"?/);
+          if (matches?.[1]) {
+            filename = matches[1];
+          }
         }
-      ).catch (error => {
+
+        const contentType = response.headers['content-type'] || 'application/octet-stream';
+        const blob = new Blob([response.data], { type: contentType });
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+
+        // clean up
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }).catch(error => {
         console.error('Error downloading photo: ', error);
-      })
-    }
+      });
+    };
     
     const handleDelete = (photo_id) => {
       const isConfirmed = window.confirm('Are you sure you want to delete the photo?')
