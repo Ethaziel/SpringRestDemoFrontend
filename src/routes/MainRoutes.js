@@ -13,6 +13,9 @@ const AlbumUploadPage = Loadable(lazy(() => import('pages/albums/albumUpload')))
 const AlbumEditPage = Loadable(lazy(() => import('pages/albums/albumEdit')));
 const PhotoEditPage = Loadable(lazy(() => import('pages/albums/photoEdit')));
 
+// users pages
+const UsersPage = Loadable(lazy(() => import('pages/users/users')));
+
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -47,7 +50,11 @@ const MainRoutes = {
     {
       path: '/album/upload',
       element: <AlbumUploadPage/>
-    }
+    },
+    {
+      path: '/users',
+      element: <UsersPage/>
+    },
     
   ]
 };
