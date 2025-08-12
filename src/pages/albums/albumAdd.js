@@ -60,12 +60,13 @@ const AddAlbumForm = () => {
             fetchPostDataWithAuth("/albums/add", payload)
                 .then((response) => {
                     console.log(response)
+                    navigate('/');
+                    window.location.reload();
                 }).catch((error) => {
                     console.error('Login error:', error);
                 });
                 console.log('Form submitted: ', payload);
-                navigate('/');
-                window.location.reload();
+                
         }
     };
 

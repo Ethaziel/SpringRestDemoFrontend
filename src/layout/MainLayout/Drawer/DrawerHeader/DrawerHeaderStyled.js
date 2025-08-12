@@ -4,12 +4,12 @@ import { Box } from '@mui/material';
 
 // ==============================|| DRAWER HEADER - STYLED ||============================== //
 
-const DrawerHeaderStyled = styled(Box, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
+const DrawerHeaderStyled = styled(Box, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme }) => ({
   ...theme.mixins.toolbar,
   display: 'flex',
   alignItems: 'center',
-  justifyContent: open ? 'flex-start' : 'center',
-  paddingLeft: theme.spacing(open ? 3 : 0)
+  justifyContent: 'center',
+  padding: theme.spacing(2),
 }));
 
 export default DrawerHeaderStyled;

@@ -84,21 +84,6 @@ const getRandomColor = () => {
   return brightPopColors[randomIndex];
 };
 
-/*
-const useStyles = makeStyles((theme) => ({
-  card: {
-    backgroundColor: getRandomColor(),
-    textAlign: 'center',
-    padding: theme.spacing(3),
-    borderRadius: theme.spacing(2),
-    height: '250px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center'
-  }
-}));
-*/
-
 const StyledCard = styled(MuiCard)(({ theme, bgcolor }) => ({
   backgroundColor: bgcolor,
   textAlign: 'center',
@@ -124,26 +109,6 @@ const AlbumDynamicGridPage = () => {
       console.log('dataArray', dataArray);
     });
   }, []);
-
- // const classes = useStyles();
- /* return (
-    <Grid container spacing={2}>
-      {dataArray.map((data, index) => (
-        <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
-          <Link to={`/album/show?id=${data.id}`}>
-            <Card className={classes.card} style={{ backgroundColor: getRandomColor() }}>
-              <CardContent>
-                <h1 style={{ fontSize: '2rem', margin: 0, color: 'white' }}>{data.name}</h1>
-              </CardContent>
-            </Card>
-          </Link>
-        </Grid>
-      ))}
-    </Grid>
-  );
-  */
-
-
 
   return (
     <Grid container spacing={2}>
