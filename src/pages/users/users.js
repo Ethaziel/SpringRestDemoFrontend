@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, Typography, CircularProgress, Button, TablePagination, Dialog,
-  DialogTitle, DialogContent, DialogActions, TextField
+  DialogTitle, DialogContent, DialogActions, TextField,
+  MenuItem, FormControl, InputLabel, Select, Checkbox, ListItemText
 } from '@mui/material';
 
 import {
@@ -44,7 +45,7 @@ const UserTable = () => {
     if (!confirm) return;
 
     try {
-      await fetchDeleteDataWithAuth(`/auth/users/${userId}`);
+      await fetchDeleteDataWithAuth(`/auth/users/${userId}/delete`);
       await loadUsers(); // refresh after deletion
     } catch (error) {
       console.error('Failed to delete user:', error);
@@ -60,15 +61,36 @@ const UserTable = () => {
   };
 
   const handleEditSave = async () => {
+    const roles = normalizeRoles(editUser.authorities); 
     try {
-      await fetchPutDataWithAuth(`/auth/users/${editUser.id}`, editUser);
-      await loadUsers(); // refresh after save
-    } catch (error) {
-      console.error('Failed to update user:', error);
-    } finally {
+      await fetchPutDataWithAuth(
+        `/auth/users/${editUser.id}/update-authorities`,
+        { authorities: roles.join(' ') }
+      );
       handleEditClose();
+      loadUsers(); 
+    } catch (err) {
+      console.error('Failed to update user:', err);
     }
   };
+
+  const [availableRoles, setAvailableRoles] = useState([]);
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_URL}/auth/roles`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => setAvailableRoles(data))
+      .catch(err => console.error("Failed to fetch roles", err));
+  }, []);
+
+  const ALL_ROLES = availableRoles;
+
+  const normalizeRoles = (auth) =>
+    Array.isArray(auth) ? auth : String(auth || '').trim().split(/\s+/).filter(Boolean);
 
   const paginatedUsers = users.slice(page * USERS_PER_PAGE, (page + 1) * USERS_PER_PAGE);
 
@@ -124,22 +146,31 @@ const UserTable = () => {
               <TextField
                 label="Email"
                 fullWidth
+                disabled
                 margin="normal"
                 value={editUser.email}
                 onChange={(e) => setEditUser({ ...editUser, email: e.target.value })}
               />
-              <TextField
-                label="Roles (comma-separated)"
-                fullWidth
-                margin="normal"
-                value={editUser.authorities}
-                onChange={(e) =>
-                  setEditUser({
-                    ...editUser,
-                    authorities: e.target.value.split(',').map(role => role.trim())
-                  })
-                }
-              />
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="roles-label">Roles</InputLabel>
+                <Select
+                  labelId="roles-label"
+                  label="Roles"
+                  multiple
+                  value={editUser ? normalizeRoles(editUser.authorities) : []}
+                  onChange={(e) =>
+                    setEditUser(prev => ({ ...prev, authorities: e.target.value })) // e.target.value is an array
+                  }
+                  renderValue={(selected) => (Array.isArray(selected) ? selected.join(', ') : String(selected))}
+                >
+                  {ALL_ROLES.map(role => (
+                    <MenuItem key={role} value={role}>
+                      <Checkbox checked={normalizeRoles(editUser?.authorities).includes(role)} />
+                      <ListItemText primary={role} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </>
           )}
         </DialogContent>
