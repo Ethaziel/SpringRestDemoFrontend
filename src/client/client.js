@@ -65,6 +65,7 @@ const fetchGetDataWithAuth = async (uri) => {
             window.location.href = '/login';
         }
         console.error('Error fetching data: ', error);
+        return null;
     }
 };
 

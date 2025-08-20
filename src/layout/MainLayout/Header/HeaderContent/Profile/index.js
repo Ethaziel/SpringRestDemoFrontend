@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -10,7 +10,6 @@ import {
   CardContent,
   ClickAwayListener,
   Grid,
-  IconButton,
   Paper,
   Popper,
   Stack,
@@ -23,11 +22,28 @@ import {
 import MainCard from 'components/MainCard';
 import Transitions from 'components/@extended/Transitions';
 import ProfileTab from './ProfileTab';
-import SettingTab from './SettingTab';
+import { fetchGetDataWithAuth } from 'client/client';
+//import SettingTab from './SettingTab';
 
 // assets
-import avatar1 from 'assets/images/users/avatar-1.png';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { /*  SettingOutlined,  */UserOutlined } from '@ant-design/icons';
+
+// avatars map
+import avatarMale1 from 'assets/images/users/avatar-male-1.png';
+import avatarMale2 from 'assets/images/users/avatar-male-2.png';
+import avatarMale3 from 'assets/images/users/avatar-male-3.png';
+import avatarFemale1 from 'assets/images/users/avatar-female-1.png';
+import avatarFemale2 from 'assets/images/users/avatar-female-2.png';
+import avatarFemale3 from 'assets/images/users/avatar-female-3.png';
+
+const avatarMap = {
+  'avatar-male-1.png': avatarMale1,
+  'avatar-male-2.png': avatarMale2,
+  'avatar-male-3.png': avatarMale3,
+  'avatar-female-1.png': avatarFemale1,
+  'avatar-female-2.png': avatarFemale2,
+  'avatar-female-3.png': avatarFemale3
+};
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -56,9 +72,9 @@ function a11yProps(index) {
 const Profile = () => {
   const theme = useTheme();
 
-  const handleLogout = async () => {
+  /* const handleLogout = async () => {
     // logout
-  };
+  }; */
 
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -79,6 +95,19 @@ const Profile = () => {
     setValue(newValue);
   };
 
+  const [account, setAccount] = useState(null);
+
+  // fetch account on mount
+  useEffect(() => {
+    const fetchAccount = async () => {
+      const response = await fetchGetDataWithAuth('/auth/profile/account');
+      if (response) {
+        setAccount(response.data);
+      }
+    };
+    fetchAccount();
+  }, []);
+
   const iconBackColorOpen = 'grey.300';
 
   return (
@@ -97,8 +126,10 @@ const Profile = () => {
         onClick={handleToggle}
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-          <Typography variant="subtitle1">John Doe</Typography>
+          <Avatar alt="profile user" src={account?.avatar ? avatarMap[account.avatar] : avatarMale1} sx={{ width: 32, height: 32 }} />
+          <Typography variant="subtitle1">
+            {account ? account.name || account.email : 'Loading...'}
+          </Typography>
         </Stack>
       </ButtonBase>
       <Popper
@@ -139,20 +170,16 @@ const Profile = () => {
                       <Grid container justifyContent="space-between" alignItems="center">
                         <Grid item>
                           <Stack direction="row" spacing={1.25} alignItems="center">
-                            <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                            <Avatar alt="profile user" src={account?.avatar ? avatarMap[account.avatar] : avatarMale1} sx={{ width: 32, height: 32 }} />
                             <Stack>
-                              <Typography variant="h6">John Doe</Typography>
+                              <Typography variant="h6">{account?.name || 'Unknown User'}</Typography>
                               <Typography variant="body2" color="textSecondary">
-                                UI/UX Designer
+                                {account?.job || 'No job info'}
                               </Typography>
                             </Stack>
                           </Stack>
                         </Grid>
-                        <Grid item>
-                          <IconButton size="large" color="secondary" onClick={handleLogout}>
-                            <LogoutOutlined />
-                          </IconButton>
-                        </Grid>
+                        
                       </Grid>
                     </CardContent>
                     {open && (
@@ -171,7 +198,7 @@ const Profile = () => {
                               label="Profile"
                               {...a11yProps(0)}
                             />
-                            <Tab
+                            {/* <Tab
                               sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
@@ -182,15 +209,15 @@ const Profile = () => {
                               icon={<SettingOutlined style={{ marginBottom: 0, marginRight: '10px' }} />}
                               label="Setting"
                               {...a11yProps(1)}
-                            />
+                            /> */}
                           </Tabs>
                         </Box>
                         <TabPanel value={value} index={0} dir={theme.direction}>
-                          <ProfileTab handleLogout={handleLogout} />
+                          <ProfileTab /* handleLogout={handleLogout} */ />
                         </TabPanel>
-                        <TabPanel value={value} index={1} dir={theme.direction}>
+                        {/* <TabPanel value={value} index={1} dir={theme.direction}>
                           <SettingTab />
-                        </TabPanel>
+                        </TabPanel> */}
                       </>
                     )}
                   </MainCard>

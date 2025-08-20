@@ -1,14 +1,31 @@
 import React, {useEffect, useState} from 'react';
-import { Button, Container, TextField } from '../../../../node_modules/@mui/material/index';
+import {
+  Button,
+  Container,
+  TextField,
+  MenuItem, 
+  Typography,
+  Box, 
+} from "@mui/material";
 import { fetchPostData } from 'client/client';
 import { useNavigate } from 'react-router-dom';
 
 
 const AuthRegister = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    name: "",           // NEW
+    job: "",            // NEW
+    age: "",            // NEW
+    personalInfo: "",   // NEW
+    male: true,         // NEW (default male)
+  });
+  /* const [email, setEmail] = useState('');
+  const [password, setPassword] = useState(''); */
   const [errors, setErrors] = useState({ email: '', password: ''});
-  const [loginError, setLoginError] = useState('');
+  const [registerError, setRegisterError] = useState('');
   const navigate = useNavigate();
 
 
@@ -22,14 +39,22 @@ const AuthRegister = () => {
 
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(formData.email);
   };
 
   const validatePassword = () => {
-    return password.length >= 6 && password.length <= 15;
+    return formData.password.length >= 6 && formData.password.length <= 15;
   };
 
-  const handleLogin = async () => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "age" ? Number(value) : value,
+    }));
+  };
+
+  const handleRegister = async () => {
     // reset previous errors
     setErrors({email: '', password: ''});
 
@@ -44,14 +69,14 @@ const AuthRegister = () => {
     }
 
     // login logic here
-    fetchPostData("/auth/users/add", {email, password})
+    fetchPostData("/auth/users/add", formData)
       .then(() => {
-        setLoginError('');
+        setRegisterError('');
         navigate('/login'); // relocates to home page
         window.location.reload();
       }) .catch((error) => {
         console.error('Login error: ', error);
-        setLoginError('An error during login');
+        setRegisterError("An error occurred during registration");
       });
 
 
@@ -61,31 +86,82 @@ const AuthRegister = () => {
 
     return (
       <Container component="main" maxWidth="xs">
-        <TextField 
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          label="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          error={!!errors.email}
-          helperText={errors.email}
-        />
-        <TextField 
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          error={!!errors.password}
-          helperText={errors.password}
-        />
-        <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
-          Register
-        </Button>
-        {loginError && <p style={{color: 'red'}}>{loginError}</p>}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}> 
+          <TextField
+            label="Email"
+            name="email"
+            fullWidth
+            value={formData.email}
+            onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
+          />
+          <TextField
+            label="Password"
+            name="password"
+            type="password"
+            fullWidth
+            value={formData.password}
+            onChange={handleChange}
+            error={!!errors.password}
+            helperText={errors.password}
+          />
+          
+          <TextField
+            label="Name"
+            name="name"
+            fullWidth
+            value={formData.name}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Job"
+            name="job"
+            fullWidth
+            value={formData.job}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Age"
+            name="age"
+            type="number"
+            fullWidth
+            value={formData.age}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Personal Info"
+            name="personalInfo"
+            fullWidth
+            multiline
+            minRows={3}
+            value={formData.personalInfo}
+            onChange={handleChange}
+          />
+          <TextField
+            select
+            label="Gender"
+            name="male"
+            fullWidth
+            value={formData.male}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                male: e.target.value === "true",
+              }))
+            }
+          >
+            <MenuItem value={"true"}>Male</MenuItem>
+            <MenuItem value={"false"}>Female</MenuItem>
+          </TextField>
+
+          <Button variant="contained" color="primary" onClick={handleRegister}>
+            Register
+          </Button>
+          {registerError && (
+            <Typography color="error">{registerError}</Typography> 
+          )}
+        </Box>
       </Container>
     );
 };
