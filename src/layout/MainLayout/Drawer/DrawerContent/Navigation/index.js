@@ -3,12 +3,29 @@ import { Box, Typography } from '@mui/material';
 
 // project import
 import NavGroup from './NavGroup';
-import menuItem from 'menu-items';
+import menuItems from 'menu-items';
+
+import { useAuth } from 'context/AuthContext';
 
 // ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
 
 const Navigation = () => {
-  const navGroups = menuItem.items.map((item) => {
+
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null; 
+  }
+
+  // take the array inside menuItems
+  const items = menuItems.items;
+
+  // filter out admin pages if user is not admin
+  const filteredItems = items.filter(
+    (item) => item.id !== 'adminPages' || user?.authority?.includes('ADMIN')
+  );
+
+  const navGroups = filteredItems.map((item) => {
     switch (item.type) {
       case 'group':
         return <NavGroup key={item.id} item={item} />;

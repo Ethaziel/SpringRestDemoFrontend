@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Paper, Typography, CircularProgress, Button, TablePagination, Dialog,
-  DialogTitle, DialogContent, DialogActions, TextField,
-  MenuItem, FormControl, InputLabel, Select, Checkbox, ListItemText
+  DialogTitle, DialogContent, DialogActions, TextField, 
+  MenuItem, FormControl, InputLabel, Select, Checkbox, ListItemText,
+  Box
 } from '@mui/material';
 
 import {
@@ -106,6 +107,11 @@ const UserTable = () => {
               <TableCell>ID</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Roles</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Job</TableCell>
+              <TableCell>Gender</TableCell>
+              <TableCell>Age</TableCell>
+              <TableCell>Personal Info</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -115,13 +121,20 @@ const UserTable = () => {
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.authorities}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.job}</TableCell>
+                <TableCell>{(user.male === true|| user.male === null) ? "Male" : "Female"}</TableCell>
+                <TableCell>{user.age}</TableCell>
+                <TableCell>{user.personalInfo}</TableCell>
                 <TableCell align="right">
-                  <Button size="small" variant="outlined" onClick={() => handleEditOpen(user)} sx={{ mr: 1 }}>
-                    Edit
-                  </Button>
-                  <Button size="small" variant="outlined" color="error" onClick={() => handleDelete(user.id)}>
-                    Delete
-                  </Button>
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button size="small" variant="outlined" onClick={() => handleEditOpen(user)} sx={{ mr: 1 }}>
+                      Edit
+                    </Button>
+                    <Button size="small" variant="outlined" color="error" onClick={() => handleDelete(user.id)}>
+                      Delete
+                    </Button>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
