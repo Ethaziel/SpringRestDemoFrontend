@@ -16,7 +16,6 @@ const caseLogin = [{
   type: 'item',
   url: '/logout',
   icon: icons.LogoutOutlined,
-  target: true
 }]
 
 const caseLogout = [{
@@ -25,7 +24,6 @@ const caseLogout = [{
   type: 'item',
   url: '/login',
   icon: icons.LoginOutlined,
-  target: true
 },
 {
   id: 'register1',
@@ -33,7 +31,6 @@ const caseLogout = [{
   type: 'item',
   url: '/register',
   icon: icons.ProfileOutlined,
-  target: true
 }
 ]
 
