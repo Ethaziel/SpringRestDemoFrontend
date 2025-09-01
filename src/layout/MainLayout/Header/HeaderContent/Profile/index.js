@@ -83,7 +83,7 @@ const Profile = () => {
   };
 
   const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+    if (event && anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
     setOpen(false);
@@ -198,22 +198,10 @@ const Profile = () => {
                               label="Profile"
                               {...a11yProps(0)}
                             />
-                            {/* <Tab
-                              sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                textTransform: 'capitalize'
-                              }}
-                              icon={<SettingOutlined style={{ marginBottom: 0, marginRight: '10px' }} />}
-                              label="Setting"
-                              {...a11yProps(1)}
-                            /> */}
                           </Tabs>
                         </Box>
                         <TabPanel value={value} index={0} dir={theme.direction}>
-                          <ProfileTab /* handleLogout={handleLogout} */ />
+                          <ProfileTab onClose={handleClose} />
                         </TabPanel>
                         {/* <TabPanel value={value} index={1} dir={theme.direction}>
                           <SettingTab />

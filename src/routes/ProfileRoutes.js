@@ -6,6 +6,7 @@ import MainLayout from 'layout/MainLayout';
 
 // profile pages
 const ViewProfilePage = Loadable(lazy(() => import('pages/profile/viewProfile')));
+const EditProfilePage = Loadable(lazy(() => import('pages/profile/editProfile')));
 
 
 // ==============================|| PROFILE ROUTING ||============================== //
@@ -18,6 +19,10 @@ const ProfileRoutes = {
       path: 'view',
       element: <ViewProfilePage/>
     },
+    {
+      path: 'edit',
+      element: <EditProfilePage/>
+    }
     
   ]
 };

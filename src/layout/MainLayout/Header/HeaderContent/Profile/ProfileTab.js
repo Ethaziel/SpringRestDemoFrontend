@@ -1,6 +1,6 @@
 //import PropTypes from 'prop-types';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -11,17 +11,31 @@ import { EditOutlined, UserOutlined } from '@ant-design/icons';
 
 // ==============================|| HEADER PROFILE - PROFILE TAB ||============================== //
 
-const ProfileTab = () => {
+const ProfileTab = ({onClose}) => {
   const theme = useTheme();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/profile/view')) {
+      setSelectedIndex(0);
+    } else if (location.pathname.startsWith('/profile/edit')) {
+      setSelectedIndex(1);
+    }
+  }, [location.pathname]);
+
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
-    if (selectedIndex === 0) {
+    if (index === 0) {
       navigate('/profile/view');
-    } else if (selectedIndex === 1){
+    } else if (index === 1){
       navigate('/profile/edit');
+    }
+    if (onClose) {
+      setTimeout(() => onClose(), 150); 
     }
   };
 
@@ -29,13 +43,13 @@ const ProfileTab = () => {
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32, color: theme.palette.grey[500] } }}>
       <ListItemButton selected={selectedIndex === 0} onClick={(event) => handleListItemClick(event, 0)}>
         <ListItemIcon>
-          <EditOutlined />
+          <UserOutlined />
         </ListItemIcon>
         <ListItemText primary="View Profile" />
       </ListItemButton>
       <ListItemButton selected={selectedIndex === 1} onClick={(event) => handleListItemClick(event, 1)}>
         <ListItemIcon>
-          <UserOutlined />
+          <EditOutlined />
         </ListItemIcon>
         <ListItemText primary="Edit Profile" />
       </ListItemButton>
@@ -43,9 +57,5 @@ const ProfileTab = () => {
     </List>
   );
 };
-
-/* ProfileTab.propTypes = {
-  handleLogout: PropTypes.func
-}; */
 
 export default ProfileTab;
