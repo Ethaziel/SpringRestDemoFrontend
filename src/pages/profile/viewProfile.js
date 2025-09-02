@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
   Avatar,
@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
   Container,
+  Divider,
   Grid,
   Typography,
 } from "@mui/material";
@@ -34,6 +35,8 @@ export default function ViewProfile() {
 
     const [profile, setProfile] = useState({});
     const [photos, setPhotos] = useState([]);
+
+    const navigate = useNavigate();
 
     const loadProfile = async () => {
         try {
@@ -118,7 +121,7 @@ export default function ViewProfile() {
                       mb: 1,
                     }}
                   />
-                  <Button variant="outlined" size="small" color="inherit">
+                  <Button variant="outlined" size="small" color="inherit" onClick={() => navigate("/profile/edit")}>
                     Edit Profile
                   </Button>
                 </Box>
@@ -164,10 +167,23 @@ export default function ViewProfile() {
                     About
                   </Typography>
                   <Box sx={{ backgroundColor: "#f8f9fa", p: 2 }}>
+                    <Typography 
+                      variant="subtitle2" color="text.secondary" gutterBottom
+                    >
+                      Job
+                    </Typography>
                     <Typography variant="body2" sx={{ mb: 1 }}>
                       {profile.job}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
+
+                    <Divider sx={{ my: 1, opacity: 0.9, borderBottomWidth: 2 }} />
+
+                    <Typography 
+                      variant="subtitle2" color="text.secondary" gutterBottom
+                    >
+                      Personal Info
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1, whiteSpace: "pre-line" }}>
                       {profile.personalInfo}
                     </Typography>
                     
